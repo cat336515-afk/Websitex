@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Sorter Pro</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #ff6b35;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --hit: #ff9800;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent), var(--warning));
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .nav-btn.active {
+            background: var(--accent);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .section {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 1.6rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        
+        .upload-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .upload-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .upload-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px dashed #ddd;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+        
+        .upload-section.active {
+            border-color: var(--primary);
+            background: #e3f2fd;
+        }
+        
+        .upload-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .upload-header i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .file-info i {
+            margin-right: 5px;
+        }
+        
+        .process-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .process-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 18px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .filter-btn:hover {
+            background: #dee2e6;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 8px 18px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+        
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 8px 12px;
+            width: 200px;
+            font-size: 0.95rem;
+        }
+        
+        .account-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .account-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid #eaeaea;
+            overflow: hidden;
+        }
+        
+        .account-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .account-card.hit::after {
+            content: "🔥 HIT";
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, var(--hit), #ff5722);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .account-email-pass {
+            font-weight: bold;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            flex: 1;
+            margin-right: 15px;
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .vbucks-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #fff3e0, #ffecb3);
+            padding: 8px 12px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(255, 107, 53, 0.2);
+        }
+        
+        .account-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value.yes {
+            color: var(--success);
+        }
+        
+        .detail-value.no {
+            color: var(--danger);
+        }
+        
+        .skins-list {
+            margin-top: 15px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            border: 1px solid #e9ecef;
+        }
+        
+        .skins-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .skins-list::-webkit-scrollbar-thumb {
+            background-color: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+        
+        .no-results i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: #dee2e6;
+        }
+        
+        .export-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .export-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, var(--success), #20c997);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 25px;
+        }
+        
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Point Sorter Styles */
+        .point-sorter-container {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .point-input-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+        
+        .point-stats {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 18px;
+            border-radius: 10px;
+            margin: 18px 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .point-stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .point-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2575fc;
+        }
+        
+        .point-stat-label {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .paste-section {
+            margin-top: 15px;
+            text-align: left;
+        }
+        
+        .paste-section textarea {
+            width: 100%;
+            height: 120px;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        
+        .paste-btn {
+            padding: 10px 20px;
+            background: var(--info);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .paste-btn:hover {
+            background: #138496;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fortnite Sorter Pro</h1>
+            <p class="subtitle">Advanced account management with dual data processing and point-based sorting</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="nav-btn active" data-section="data-processor">
+                Data Processor
+            </button>
+            <button class="nav-btn" data-section="point-sorter">
+                Point Sorter
+            </button>
+        </div>
+        
+        <!-- Data Processor Section -->
+        <section id="data-processor" class="section active">
+            <h2 class="section-title">Data Processor</h2>
+            
+            <div class="upload-sections">
+                <div class="upload-section active" id="locker-upload">
+                    <div class="upload-header">
+                        <h3>Locker Data</h3>
+                    </div>
+                    <p>Upload files containing skin and cosmetic data</p>
+                    <input type="file" id="locker-files" class="file-input" multiple accept=".txt">
+                    <button onclick="document.getElementById('locker-files').click()" class="process-btn" style="margin-top: 15px; padding: 10px;">
+                        Select Locker Files
+                    </button>
+                    <div class="file-info" id="locker-info">
+                        No files selected
+                    </div>
+                    
+                    <div class="paste-section">
+                        <p>Or paste locker data directly:</p>
+                        <textarea id="locker-paste" placeholder="Paste locker data here..."></textarea>
+                        <button class="paste-btn" id="process-locker-paste">
+                            Process Pasted Data
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="upload-section" id="stats-upload">
+                    <div class="upload-header">
+                        <h3>Stats Data</h3>
+                    </div>
+                    <p>Upload files containing match statistics data</p>
+                    <input type="file" id="stats-files" class="file-input" multiple accept=".txt">
+                    <button onclick="document.getElementById('stats-files').click()" class="process-btn" style="margin-top: 15px; padding: 10px;">
+                        Select Stats Files
+                    </button>
+                    <div class="file-info" id="stats-info">
+                        No files selected
+                    </div>
+                    
+                    <div class="paste-section">
+                        <p>Or paste stats data directly:</p>
+                        <textarea id="stats-paste" placeholder="Paste stats data here..."></textarea>
+                        <button class="paste-btn" id="process-stats-paste">
+                            Process Pasted Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="process-data" class="process-btn">
+                Process & Merge Data
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Processing data, please wait...</p>
+            </div>
+            
+            <div class="stats-section" id="stats-section" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-label">Total Accounts</div>
+                    <div class="stat-value" id="total-accounts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total V-Bucks</div>
+                    <div class="stat-value" id="total-vbucks">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">FA: Yes</div>
+                    <div class="stat-value" id="fa-yes">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">STW: Yes</div>
+                    <div class="stat-value" id="stw-yes">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">HIT Accounts</div>
+                    <div class="stat-value" id="hit-accounts">0</div>
+                </div>
+            </div>
+            
+            <div id="results-section" style="display: none;">
+                <div class="controls">
+                    <div class="filters">
+                        <button class="filter-btn active" data-filter="all">
+                            All Accounts
+                        </button>
+                        <button class="filter-btn" data-filter="hit">
+                            HIT Accounts
+                        </button>
+                        <button class="filter-btn" data-filter="vbucks-high">
+                            High V-Bucks
+                        </button>
+                        <button class="filter-btn" data-filter="fa-yes">
+                            FA: Yes
+                        </button>
+                        <button class="filter-btn" data-filter="stw-yes">
+                            STW: Yes
+                        </button>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Search accounts...">
+                    </div>
+                </div>
+                
+                <div class="account-cards" id="account-cards">
+                    <!-- Account cards will be generated here -->
+                </div>
+                
+                <div class="export-section">
+                    <button class="export-btn" id="export-btn">
+                        Download Results
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Point Sorter Section -->
+        <section id="point-sorter" class="section">
+            <h2 class="section-title">Point Sorter</h2>
+            
+            <div class="point-sorter-container">
+                <div class="point-input-section">
+                    <h3>Sort by Points (Highest to Lowest)</h3>
+                    <p>Paste your point-based data below:</p>
+                    
+                    <textarea id="point-input" placeholder="Paste your data here...">farsyhuny@hotmail.com:Nwaf@222 | Points = 9 | MADE BY = @BosShooTeR
+john.doe@example.com:MyPass123 | Points = 15 | MADE BY = @UserOne
+jane.smith@test.com:SecurePwd! | Points = 7 | MADE BY = @CreatorTwo
+alex.wilson@demo.net:Demo1234 | Points = 22 | MADE BY = @MakerThree</textarea>
+                    
+                    <div class="buttons" style="display: flex; gap: 10px; margin: 15px 0;">
+                        <button id="point-sort-btn" style="padding: 12px 20px; background: #2ecc71; color: white; border: none; border-radius: 6px; cursor: pointer; flex: 1;">
+                            Sort by Points
+                        </button>
+                        <button id="point-clear-btn" style="padding: 12px 20px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; flex: 1;">
+                            Clear
+                        </button>
+                    </div>
+                    
+                    <div class="point-stats" id="point-stats" style="display: none;">
+                        <div class="point-stat-item">
+                            <div class="point-stat-value" id="point-total">0</div>
+                            <div class="point-stat-label">Total Entries</div>
+                        </div>
+                        <div class="point-stat-item">
+                            <div class="point-stat-value" id="point-highest">0</div>
+                            <div class="point-stat-label">Highest Points</div>
+                        </div>
+                        <div class="point-stat-item">
+                            <div class="point-stat-value" id="point-lowest">0</div>
+                            <div class="point-stat-label">Lowest Points</div>
+                        </div>
+                    </div>
+                    
+                    <textarea id="point-output" style="width: 100%; height: 200px; margin: 15px 0; padding: 15px; border-radius: 8px; border: 1px solid #ddd; display: none;" readonly></textarea>
+                    
+                    <button id="point-copy-btn" style="padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; width: 100%; display: none;">
+                        Copy Results
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Fortnite Sorter Pro | Advanced Data Processing</p>
+            <p>Made for Fortnite Professionals</p>
+        </footer>
+    </div>
+
+    <script>
+        // Global variables
+        let allAccounts = [];
+        let currentAccounts = [];
+        
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active nav button
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+        
+        // File upload handling
+        document.getElementById('locker-files').addEventListener('change', function() {
+            updateFileInfo('locker', this.files);
+        });
+        
+        document.getElementById('stats-files').addEventListener('change', function() {
+            updateFileInfo('stats', this.files);
+        });
+        
+        function updateFileInfo(type, files) {
+            const infoElement = document.getElementById(`${type}-info`);
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name).join(', ');
+                infoElement.innerHTML = `${files.length} file(s) selected: ${fileNames}`;
+            } else {
+                infoElement.innerHTML = 'No files selected';
+            }
+        }
+        
+        // Process pasted data
+        document.getElementById('process-locker-paste').addEventListener('click', function() {
+            const pastedData = document.getElementById('locker-paste').value.trim();
+            if (!pastedData) {
+                alert('Please paste locker data first');
+                return;
+            }
+            
+            // Update file info to show pasted data is being used
+            document.getElementById('locker-info').innerHTML = 'Using pasted data';
+            
+            // Process the data
+            processPastedData('locker', pastedData);
+        });
+        
+        document.getElementById('process-stats-paste').addEventListener('click', function() {
+            const pastedData = document.getElementById('stats-paste').value.trim();
+            if (!pastedData) {
+                alert('Please paste stats data first');
+                return;
+            }
+            
+            // Update file info to show pasted data is being used
+            document.getElementById('stats-info').innerHTML = 'Using pasted data';
+            
+            // Process the data
+            processPastedData('stats', pastedData);
+        });
+        
+        function processPastedData(type, data) {
+            // Create a mock file object to use the existing processing functions
+            const mockFile = {
+                name: `pasted_${type}_data.txt`,
+                content: data
+            };
+            
+            if (type === 'locker') {
+                const lockerAccounts = parseLockerData([mockFile]);
+                // Store for later merging
+                window.lockerAccounts = lockerAccounts;
+            } else if (type === 'stats') {
+                const statsAccounts = parseStatsData([mockFile]);
+                // Store for later merging
+                window.statsAccounts = statsAccounts;
+            }
+            
+            alert(`${type} data processed successfully! Click "Process & Merge Data" to combine with other data.`);
+        }
+        
+        // Process data
+        document.getElementById('process-data').addEventListener('click', processAllData);
+        
+        async function processAllData() {
+            const lockerFiles = document.getElementById('locker-files').files;
+            const statsFiles = document.getElementById('stats-files').files;
+            
+            // Check if we have pasted data
+            const hasLockerPaste = document.getElementById('locker-info').innerHTML.includes('pasted');
+            const hasStatsPaste = document.getElementById('stats-info').innerHTML.includes('pasted');
+            
+            if (lockerFiles.length === 0 && statsFiles.length === 0 && !hasLockerPaste && !hasStatsPaste) {
+                alert('Please select at least one file or paste data in one of the sections');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                let lockerAccounts = [];
+                let statsAccounts = [];
+                
+                // Process locker files if available
+                if (lockerFiles.length > 0) {
+                    const lockerData = await readFiles(lockerFiles);
+                    lockerAccounts = parseLockerData(lockerData);
+                } else if (hasLockerPaste && window.lockerAccounts) {
+                    lockerAccounts = window.lockerAccounts;
+                }
+                
+                // Process stats files if available
+                if (statsFiles.length > 0) {
+                    const statsData = await readFiles(statsFiles);
+                    statsAccounts = parseStatsData(statsData);
+                } else if (hasStatsPaste && window.statsAccounts) {
+                    statsAccounts = window.statsAccounts;
+                }
+                
+                // Merge accounts intelligently
+                allAccounts = mergeAccounts(lockerAccounts, statsAccounts);
+                
+                // Sort by V-Bucks (high to low)
+                allAccounts.sort((a, b) => b.vbucks - a.vbucks);
+                
+                // Update stats and display
+                updateStats(allAccounts);
+                displayAccounts(allAccounts);
+                
+                // Show results
+                document.getElementById('stats-section').style.display = 'grid';
+                document.getElementById('results-section').style.display = 'block';
+                
+            } catch (error) {
+                alert('Error processing files: ' + error.message);
+            }
+            
+            hideLoading();
+        }
+        
+        function readFiles(files) {
+            const readers = [];
+            const fileArray = Array.from(files);
+            
+            fileArray.forEach(file => {
+                const reader = new FileReader();
+                readers.push(new Promise(resolve => {
+                    reader.onload = function(e) {
+                        resolve({
+                            name: file.name,
+                            content: e.target.result
+                        });
+                    };
+                    reader.readAsText(file);
+                }));
+            });
+            
+            return Promise.all(readers);
+        }
+        
+        function parseLockerData(fileData) {
+            const accounts = [];
+            const allContent = fileData.map(f => f.content).join('\n');
+            const lines = allContent.split('\n');
+            
+            let currentAccount = null;
+            
+            for (let line of lines) {
+                line = line.trim();
+                
+                // Skip empty lines and headers
+                if (!line || line.includes('generated by') || line.includes('====================')) continue;
+                
+                // Check for email:password
+                const emailPassMatch = line.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+):([^|\s]+)/);
+                if (emailPassMatch) {
+                    if (currentAccount) accounts.push(currentAccount);
+                    
+                    currentAccount = {
+                        email: emailPassMatch[1].trim(),
+                        password: emailPassMatch[2].trim(),
+                        fa: 'No',
+                        twofa: 'No',
+                        stw: 'No',
+                        vbucks: 0,
+                        skins: 0,
+                        skinNames: [],
+                        lastPlayed: '',
+                        username: '',
+                        matchesPlayed: 0,
+                        isHit: false,
+                        dataType: 'locker'
+                    };
+                    
+                    line = line.substring(emailPassMatch[0].length);
+                }
+                
+                if (currentAccount) {
+                    // Parse various field formats
+                    const faMatch = line.match(/FA:\s*(Yes|No|True|False)/i);
+                    if (faMatch) currentAccount.fa = normalizeBoolean(faMatch[1]);
+                    
+                    const twofaMatch = line.match(/2FA:\s*(Yes|No|True|False)/i);
+                    if (twofaMatch) currentAccount.twofa = normalizeBoolean(twofaMatch[1]);
+                    
+                    const stwMatch = line.match(/STW:\s*(Yes|No|True|False)/i);
+                    if (stwMatch) currentAccount.stw = normalizeBoolean(stwMatch[1]);
+                    
+                    const vbucksMatch = line.match(/Vbucks Count:\s*(\d+)|V-Bucks:\s*(\d+)/i);
+                    if (vbucksMatch) currentAccount.vbucks = parseInt(vbucksMatch[1] || vbucksMatch[2]) || 0;
+                    
+                    const skinsMatch = line.match(/Skins:\s*\[(\d+)\]/);
+                    if (skinsMatch) currentAccount.skins = parseInt(skinsMatch[1]) || 0;
+                    
+                    const skinNamesMatch = line.match(/Skins:\s*\[[^\]]*\]:\s*(.+)/);
+                    if (skinNamesMatch) currentAccount.skinNames = skinNamesMatch[1].split(', ').filter(name => name.trim());
+                    
+                    const lastPlayedMatch = line.match(/Last Played:\s*([^|]+)/);
+                    if (lastPlayedMatch) currentAccount.lastPlayed = lastPlayedMatch[1].trim();
+                    
+                    const usernameMatch = line.match(/Username:\s*([^|]+)/);
+                    if (usernameMatch) currentAccount.username = usernameMatch[1].trim();
+                }
+            }
+            
+            if (currentAccount) accounts.push(currentAccount);
+            
+            // Mark HIT accounts
+            accounts.forEach(account => {
+                account.isHit = account.fa === 'Yes' && account.stw === 'Yes';
+            });
+            
+            return accounts;
+        }
+        
+        function parseStatsData(fileData) {
+            const accounts = [];
+            const allContent = fileData.map(f => f.content).join('\n');
+            const lines = allContent.split('\n');
+            
+            for (let line of lines) {
+                line = line.trim();
+                
+                // Skip empty lines
+                if (!line) continue;
+                
+                // Check for email:password
+                const emailPassMatch = line.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+):([^|\s]+)/);
+                if (emailPassMatch) {
+                    const account = {
+                        email: emailPassMatch[1].trim(),
+                        password: emailPassMatch[2].trim(),
+                        fa: 'No',
+                        twofa: 'No',
+                        stw: 'No',
+                        vbucks: 0,
+                        skins: 0,
+                        skinNames: [],
+                        lastPlayed: '',
+                        username: '',
+                        matchesPlayed: 0,
+                        isHit: false,
+                        dataType: 'stats'
+                    };
+                    
+                    // Parse stats-specific fields
+                    const faMatch = line.match(/FA:\s*(Yes|No|True|False)/i);
+                    if (faMatch) account.fa = normalizeBoolean(faMatch[1]);
+                    
+                    const twofaMatch = line.match(/2FA:\s*(Yes|No|True|False)/i);
+                    if (twofaMatch) account.twofa = normalizeBoolean(twofaMatch[1]);
+                    
+                    const stwMatch = line.match(/STW:\s*(Yes|No|True|False)/i);
+                    if (stwMatch) account.stw = normalizeBoolean(stwMatch[1]);
+                    
+                    const vbucksMatch = line.match(/Vbucks Count:\s*(\d+)/i);
+                    if (vbucksMatch) account.vbucks = parseInt(vbucksMatch[1]) || 0;
+                    
+                    const lastPlayedMatch = line.match(/Last Played:\s*([^|]+)/);
+                    if (lastPlayedMatch) account.lastPlayed = lastPlayedMatch[1].trim();
+                    
+                    const usernameMatch = line.match(/Username:\s*([^|]+)/);
+                    if (usernameMatch) account.username = usernameMatch[1].trim();
+                    
+                    const matchesMatch = line.match(/Matches Played:\s*(\d+)/i);
+                    if (matchesMatch) account.matchesPlayed = parseInt(matchesMatch[1]) || 0;
+                    
+                    // Mark HIT accounts
+                    account.isHit = account.fa === 'Yes' && account.stw === 'Yes';
+                    
+                    accounts.push(account);
+                }
+            }
+            
+            return accounts;
+        }
+        
+        function normalizeBoolean(value) {
+            if (typeof value === 'string') {
+                return value.toLowerCase() === 'true' || value.toLowerCase() === 'yes' ? 'Yes' : 'No';
+            }
+            return value ? 'Yes' : 'No';
+        }
+        
+        function mergeAccounts(lockerAccounts, statsAccounts) {
+            const mergedAccounts = [];
+            const accountMap = new Map();
+            
+            // Add all locker accounts to the map
+            lockerAccounts.forEach(account => {
+                accountMap.set(account.email, { ...account });
+            });
+            
+            // Merge stats accounts, prioritizing stats data for certain fields
+            statsAccounts.forEach(statsAccount => {
+                if (accountMap.has(statsAccount.email)) {
+                    const existingAccount = accountMap.get(statsAccount.email);
+                    
+                    // Merge fields, with stats data taking priority for gameplay stats
+                    existingAccount.fa = statsAccount.fa || existingAccount.fa;
+                    existingAccount.twofa = statsAccount.twofa || existingAccount.twofa;
+                    existingAccount.stw = statsAccount.stw || existingAccount.stw;
+                    existingAccount.vbucks = statsAccount.vbucks || existingAccount.vbucks;
+                    existingAccount.lastPlayed = statsAccount.lastPlayed || existingAccount.lastPlayed;
+                    existingAccount.username = statsAccount.username || existingAccount.username;
+                    existingAccount.matchesPlayed = statsAccount.matchesPlayed || existingAccount.matchesPlayed;
+                    existingAccount.dataType = 'merged';
+                    
+                    // Update HIT status
+                    existingAccount.isHit = existingAccount.fa === 'Yes' && existingAccount.stw === 'Yes';
+                } else {
+                    accountMap.set(statsAccount.email, { ...statsAccount });
+                }
+            });
+            
+            // Convert map back to array
+            accountMap.forEach(account => {
+                mergedAccounts.push(account);
+            });
+            
+            return mergedAccounts;
+        }
+        
+        function updateStats(accounts) {
+            document.getElementById('total-accounts').textContent = accounts.length.toLocaleString();
+            
+            const totalVbucksCount = accounts.reduce((sum, account) => sum + account.vbucks, 0);
+            document.getElementById('total-vbucks').textContent = totalVbucksCount.toLocaleString();
+            
+            const faYesCount = accounts.filter(account => account.fa === 'Yes').length;
+            document.getElementById('fa-yes').textContent = faYesCount.toLocaleString();
+            
+            const stwYesCount = accounts.filter(account => account.stw === 'Yes').length;
+            document.getElementById('stw-yes').textContent = stwYesCount.toLocaleString();
+            
+            const hitCount = accounts.filter(account => account.isHit).length;
+            document.getElementById('hit-accounts').textContent = hitCount.toLocaleString();
+        }
+        
+        function displayAccounts(accounts) {
+            const accountCards = document.getElementById('account-cards');
+            accountCards.innerHTML = '';
+            
+            if (accounts.length === 0) {
+                accountCards.innerHTML = `
+                    <div class="no-results">
+                        <h3>No accounts found</h3>
+                        <p>Try changing your filters or search query</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            accounts.forEach(account => {
+                const card = document.createElement('div');
+                card.className = 'account-card';
+                if (account.isHit) {
+                    card.classList.add('hit');
+                }
+                
+                card.innerHTML = `
+                    <div class="account-header">
+                        <div class="account-email-pass">
+                            ${account.email}:${account.password}
+                            <button class="copy-btn" onclick="copyToClipboard('${account.email}:${account.password}')" title="Copy credentials">
+                                Copy
+                            </button>
+                        </div>
+                        <div class="vbucks-display">
+                            ${account.vbucks.toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="account-details">
+                        <div class="detail-item">
+                            <span class="detail-label">FA:</span>
+                            <span class="detail-value ${account.fa === 'Yes' ? 'yes' : 'no'}">${account.fa}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">2FA:</span>
+                            <span class="detail-value ${account.twofa === 'Yes' ? 'yes' : 'no'}">${account.twofa}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">STW:</span>
+                            <span class="detail-value ${account.stw === 'Yes' ? 'yes' : 'no'}">${account.stw}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Skins:</span>
+                            <span class="detail-value">${account.skins}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Played:</span>
+                            <span class="detail-value">${account.lastPlayed || 'Unknown'}</span>
+                        </div>
+                        ${account.matchesPlayed > 0 ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Matches:</span>
+                            <span class="detail-value">${account.matchesPlayed}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${account.skinNames.length > 0 ? `
+                        <div class="skins-list">
+                            <strong>Skins:</strong> ${account.skinNames.join(', ')}
+                        </div>
+                    ` : ''}
+                `;
+                
+                accountCards.appendChild(card);
+            });
+            
+            currentAccounts = accounts;
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('process-data').disabled = true;
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('process-data').disabled = false;
+        }
+        
+        // Filter accounts
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                filterAccounts(filter);
+            });
+        });
+        
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function() {
+            const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+            filterAccounts(activeFilter);
+        });
+        
+        function filterAccounts(filter) {
+            let filtered = [...allAccounts];
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(account => 
+                    account.email.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Apply category filter
+            switch(filter) {
+                case 'hit':
+                    filtered = filtered.filter(account => account.isHit);
+                    break;
+                case 'vbucks-high':
+                    filtered = filtered.filter(account => account.vbucks >= 500);
+                    break;
+                case 'fa-yes':
+                    filtered = filtered.filter(account => account.fa === 'Yes');
+                    break;
+                case 'stw-yes':
+                    filtered = filtered.filter(account => account.stw === 'Yes');
+                    break;
+                default:
+                    // 'all' - no additional filtering
+            }
+            
+            displayAccounts(filtered);
+        }
+        
+        // Export results
+        document.getElementById('export-btn').addEventListener('click', function() {
+            if (allAccounts.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            let exportData = "Fortnite Account Data Export\n";
+            exportData += "Generated on: " + new Date().toLocaleString() + "\n";
+            exportData += "Total Accounts: " + allAccounts.length + "\n";
+            exportData += "Total V-Bucks: " + allAccounts.reduce((sum, account) => sum + account.vbucks, 0) + "\n\n";
+            
+            allAccounts.forEach(account => {
+                exportData += `${account.email}:${account.password} | FA: ${account.fa} | 2FA: ${account.twofa} | STW: ${account.stw} | V-Bucks: ${account.vbucks} | Skins: ${account.skins} | Last Played: ${account.lastPlayed || 'Unknown'} | Matches: ${account.matchesPlayed}\n`;
+            });
+            
+            const blob = new Blob([exportData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fortnite_accounts_export.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        
+        // Point Sorter functionality
+        document.getElementById('point-sort-btn').addEventListener('click', function() {
+            const inputText = document.getElementById('point-input').value.trim();
+            
+            if (!inputText) {
+                alert('Please enter some data to sort.');
+                return;
+            }
+            
+            const sortedData = parseAndSortPointData(inputText);
+            
+            // Display the sorted data with points
+            document.getElementById('point-output').value = sortedData.map(item => 
+                `${item.emailPass} | Points = ${item.points}`
+            ).join('\n');
+            
+            // Update statistics
+            document.getElementById('point-total').textContent = sortedData.length;
+            document.getElementById('point-highest').textContent = sortedData.length > 0 ? sortedData[0].points : 0;
+            document.getElementById('point-lowest').textContent = sortedData.length > 0 ? sortedData[sortedData.length - 1].points : 0;
+            
+            // Show output section
+            document.getElementById('point-stats').style.display = 'flex';
+            document.getElementById('point-output').style.display = 'block';
+            document.getElementById('point-copy-btn').style.display = 'block';
+        });
+        
+        document.getElementById('point-clear-btn').addEventListener('click', function() {
+            document.getElementById('point-input').value = '';
+            document.getElementById('point-stats').style.display = 'none';
+            document.getElementById('point-output').style.display = 'none';
+            document.getElementById('point-copy-btn').style.display = 'none';
+        });
+        
+        document.getElementById('point-copy-btn').addEventListener('click', function() {
+            const outputText = document.getElementById('point-output');
+            outputText.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const originalText = this.textContent;
+            this.textContent = 'Copied!';
+            this.style.backgroundColor = '#2ecc71';
+            
+            setTimeout(() => {
+                this.textContent = originalText;
+                this.style.backgroundColor = '';
+            }, 2000);
+        });
+        
+        function parseAndSortPointData(inputText) {
+            const lines = inputText.split('\n');
+            const data = [];
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) continue;
+                
+                // Extract email:password and points
+                const emailPassMatch = trimmedLine.match(/^([^|]+)/);
+                const pointsMatch = trimmedLine.match(/Points\s*=\s*(\d+)/i);
+                
+                if (emailPassMatch && pointsMatch) {
+                    const emailPass = emailPassMatch[1].trim();
+                    const points = parseInt(pointsMatch[1]);
+                    
+                    data.push({
+                        emailPass: emailPass,
+                        points: points,
+                        original: trimmedLine
+                    });
+                }
+            }
+            
+            // Sort by points (highest to lowest)
+            data.sort((a, b) => b.points - a.points);
+            
+            return data;
+        }
+        
+        // Copy to clipboard function
+        window.copyToClipboard = function(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show a temporary success message
+                const originalText = event.target.innerHTML;
+                event.target.innerHTML = 'Copied!';
+                setTimeout(() => {
+                    event.target.innerHTML = originalText;
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        };
+    </script>
+</body>
+</html>
