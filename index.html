@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fortnite Sorter Pro - Fast, secure, and client-side tool for sorting Fortnite accounts by points.">
     <title>Fortnite Sorter Pro | Point Sorter</title>
+    
+    <!-- Dynamic Favicon (Star Emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⭐</text></svg>">
+    
+    <!-- CDN Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         :root {
             /* Light Theme Variables */
@@ -33,12 +40,15 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
-            max-width: 1200px; /* Standard width for normal view */
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            flex: 1;
         }
 
         /* Header Styles */
@@ -76,6 +86,7 @@
             margin-right: auto;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
+            flex-wrap: wrap;
         }
 
         .nav-btn {
@@ -170,6 +181,7 @@
         }
 
         .btn-primary { background: var(--primary); }
+        .btn-orange { background: var(--orange); }
         .btn-danger { background: var(--danger); }
         .btn-success { background: var(--success); }
         .btn-secondary { background: #475569; }
@@ -216,7 +228,7 @@
         
         table {
             width: 100%;
-            border-collapse: collapse; /* Standard collapse for data view */
+            border-collapse: collapse;
         }
 
         th {
@@ -255,10 +267,10 @@
         /* Points Column Styling */
         .points-cell {
             font-family: 'Inter', sans-serif;
-            font-size: 1.1rem; /* Normal bold size */
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--text-main); /* Default color (Dark) */
-            width: 120px; /* Fixed width for alignment */
+            color: var(--text-main);
+            width: 120px;
         }
 
         /* High Points Highlight */
@@ -289,6 +301,17 @@
             border-color: #fed7aa;
         }
 
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            background: white;
+        }
+
         /* Utility */
         .hidden { display: none; }
         .text-center { text-align: center; }
@@ -297,6 +320,10 @@
             h1 { font-size: 1.8rem; }
             .btn { width: 100%; justify-content: center; }
         }
+
+        /* Animation */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -308,63 +335,63 @@
         </header>
 
         <nav class="nav-tabs">
-            <button class="nav-btn active" data-target="point-sorter">
-                <i class="fas fa-sort-amount-down"></i> Point Sorter
+            <button class="nav-btn active" data-target="point-sorter-new">
+                <i class="fas fa-bolt"></i> Point Sorter New
+            </button>
+            <button class="nav-btn" data-target="point-sorter-classic">
+                <i class="fas fa-history"></i> Point Sorter Classic
             </button>
             <button class="nav-btn" data-target="data-processor">
                 <i class="fas fa-file-invoice"></i> Data Processor
             </button>
         </nav>
 
-        <!-- Point Sorter Section (HOME PAGE) -->
-        <section id="point-sorter" class="section active">
-            <div class="card">
-                <h2 style="margin-bottom: 15px; font-size: 1.5rem; color: var(--primary);"><i class="fas fa-bolt"></i> Fast Sorter</h2>
-                <p style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">Paste your combo list below. Format: <code>email:pass | Points = 123</code></p>
-                <textarea id="point-input" placeholder="user@example.com:password | Points = 2500&#10;user2@example.com:password | Points = 120..."></textarea>
+        <!-- Point Sorter NEW (Default) -->
+        <section id="point-sorter-new" class="section active">
+            <div class="card" style="border-top: 4px solid var(--orange);">
+                <h2 style="margin-bottom: 15px; font-size: 1.5rem; color: var(--text-main);"><i class="fas fa-star" style="color: var(--orange);"></i> New Sorter (Format: Points: 123)</h2>
+                <p style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">Supports new data type. Highlight > 4000. Copies Creds Only.</p>
+                <textarea id="new-input" placeholder="user@example.com:password | Points: 4135&#10;user2@example.com:password | Points: 120"></textarea>
                 
                 <div class="btn-group">
-                    <button id="btn-sort" class="btn btn-primary">
+                    <button id="btn-sort-new" class="btn btn-orange">
                         <i class="fas fa-play"></i> Sort & Process
                     </button>
-                    <button id="btn-copy-all" class="btn btn-secondary hidden">
+                    <button id="btn-copy-all-new" class="btn btn-secondary hidden">
                         <i class="fas fa-copy"></i> Copy All
                     </button>
-                    <button id="btn-download" class="btn btn-success hidden">
-                        <i class="fas fa-download"></i> Download
-                    </button>
-                    <button id="btn-clear" class="btn btn-danger">
+                    <button id="btn-clear-new" class="btn btn-danger">
                         <i class="fas fa-trash"></i> Clear
                     </button>
                 </div>
             </div>
 
-            <div id="point-stats-container" class="stats-grid hidden">
+            <div id="new-stats" class="stats-grid hidden">
                 <div class="stat-box">
-                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-value" id="new-stat-total">0</div>
                     <div class="stat-label">Total Loaded</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="stat-highest">0</div>
+                    <div class="stat-value" id="new-stat-highest">0</div>
                     <div class="stat-label">Highest Points</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="stat-avg">0</div>
+                    <div class="stat-value" id="new-stat-avg">0</div>
                     <div class="stat-label">Average Points</div>
                 </div>
             </div>
 
-            <div id="results-wrapper" class="hidden" style="margin-top: 20px;">
+            <div id="new-results-wrapper" class="hidden" style="margin-top: 20px;">
                 <div class="results-container">
-                    <table id="results-table">
+                    <table id="new-results-table">
                         <thead>
                             <tr>
-                                <th>Points</th>
                                 <th>Account Credentials</th>
+                                <th>Points</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="results-body">
+                        <tbody id="new-results-body">
                             <!-- JS generates rows here -->
                         </tbody>
                     </table>
@@ -372,7 +399,56 @@
             </div>
         </section>
 
-        <!-- Data Processor Section (Secondary) -->
+        <!-- Point Sorter CLASSIC -->
+        <section id="point-sorter-classic" class="section">
+            <div class="card" style="border-top: 4px solid var(--primary);">
+                <h2 style="margin-bottom: 15px; font-size: 1.5rem; color: var(--primary);"><i class="fas fa-history"></i> Classic Sorter (Format: Points = 123)</h2>
+                <p style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">Classic logic. Copies Full Line.</p>
+                <textarea id="classic-input" placeholder="user@example.com:password | Points = 2500&#10;user2@example.com:password | Points = 120"></textarea>
+                
+                <div class="btn-group">
+                    <button id="btn-sort-classic" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Sort Classic
+                    </button>
+                    <button id="btn-copy-all-classic" class="btn btn-secondary hidden">
+                        <i class="fas fa-copy"></i> Copy All
+                    </button>
+                    <button id="btn-clear-classic" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div id="classic-stats" class="stats-grid hidden">
+                <div class="stat-box">
+                    <div class="stat-value" id="classic-stat-total">0</div>
+                    <div class="stat-label">Total Loaded</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="classic-stat-highest">0</div>
+                    <div class="stat-label">Highest Points</div>
+                </div>
+            </div>
+
+            <div id="classic-results-wrapper" class="hidden" style="margin-top: 20px;">
+                <div class="results-container">
+                    <table id="classic-results-table">
+                        <thead>
+                            <tr>
+                                <th>Full Data Line</th>
+                                <th>Points</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classic-results-body">
+                            <!-- JS generates rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Processor Section -->
         <section id="data-processor" class="section">
             <div class="card">
                 <h2 style="margin-bottom: 15px; font-size: 1.5rem; color: var(--accent);"><i class="fas fa-microchip"></i> Locker & Stats Processor</h2>
@@ -406,6 +482,10 @@
 
     </div>
 
+    <footer>
+        <p>Fortnite Sorter Pro &copy; 2025 | Optimized for Performance</p>
+    </footer>
+
     <script>
         // --- 1. Navigation Logic ---
         const navBtns = document.querySelectorAll('.nav-btn');
@@ -413,146 +493,201 @@
 
         navBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Remove active classes
                 navBtns.forEach(b => b.classList.remove('active'));
                 sections.forEach(s => s.classList.remove('active'));
-
-                // Add active class to click
                 btn.classList.add('active');
                 const targetId = btn.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
             });
         });
 
-        // --- 2. Point Sorter Logic (Optimized) ---
-        let sortedDataCache = [];
+        // --- Shared Utilities ---
+        function copyToClipboard(text, onSuccess) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                if (onSuccess) onSuccess();
+            } catch (err) {
+                alert('Failed to copy to clipboard.');
+            }
+            document.body.removeChild(textarea);
+        }
 
-        document.getElementById('btn-sort').addEventListener('click', function() {
-            const input = document.getElementById('point-input').value;
+        window.copyText = function(text, btnElement) {
+            copyToClipboard(text, () => {
+                const icon = btnElement.querySelector('i');
+                const originalClass = icon.className;
+                icon.className = 'fas fa-check';
+                setTimeout(() => { icon.className = 'fas fa-copy'; }, 1500);
+            });
+        };
+
+        // --- 2. NEW Point Sorter Logic ---
+        let newDataCache = [];
+
+        document.getElementById('btn-sort-new').addEventListener('click', function() {
+            const input = document.getElementById('new-input').value;
             if(!input.trim()) return alert('Please paste some data first!');
 
-            // Performance: Process data
             const lines = input.split('\n');
             const processed = [];
             let totalPoints = 0;
-
-            // Fast Regex loop
-            const regex = /^(.*?)\s*\|\s*Points\s*=\s*(\d+)/i;
+            // New Regex: Handles "Points:" and "Points ="
+            const regex = /^(.*?)\s*\|\s*Points\s*[:=]\s*(\d+)/i;
 
             for(let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
-                if(line.length < 5) continue; // Skip empty/garbage
-
+                if(line.length < 5) continue; 
                 const match = line.match(regex);
                 if(match) {
                     const points = parseInt(match[2], 10);
-                    processed.push({
-                        creds: match[1],
-                        points: points,
-                        original: line
-                    });
+                    processed.push({ creds: match[1], points: points, original: line });
                     totalPoints += points;
                 }
             }
 
-            if(processed.length === 0) {
-                return alert('No valid "Points =" format found.');
-            }
+            if(processed.length === 0) return alert('No valid "Points:" data found.');
 
-            // Sort High to Low
             processed.sort((a, b) => b.points - a.points);
-            sortedDataCache = processed;
+            newDataCache = processed;
 
-            // Update Stats
-            document.getElementById('stat-total').innerText = processed.length.toLocaleString();
-            document.getElementById('stat-highest').innerText = processed[0].points.toLocaleString();
-            document.getElementById('stat-avg').innerText = Math.floor(totalPoints / processed.length).toLocaleString();
+            document.getElementById('new-stat-total').innerText = processed.length.toLocaleString();
+            document.getElementById('new-stat-highest').innerText = processed[0].points.toLocaleString();
+            document.getElementById('new-stat-avg').innerText = Math.floor(totalPoints / processed.length).toLocaleString();
             
-            // Show Containers
-            document.getElementById('point-stats-container').classList.remove('hidden');
-            document.getElementById('results-wrapper').classList.remove('hidden');
-            document.getElementById('btn-copy-all').classList.remove('hidden');
-            document.getElementById('btn-download').classList.remove('hidden');
-
-            // Render Table (Optimized HTML String Building)
-            renderTable(processed);
+            document.getElementById('new-stats').classList.remove('hidden');
+            document.getElementById('new-results-wrapper').classList.remove('hidden');
+            document.getElementById('btn-copy-all-new').classList.remove('hidden');
+            
+            renderNewTable(processed);
         });
 
-        function renderTable(data) {
-            const tbody = document.getElementById('results-body');
-            // Using array join is faster than innerHTML += in loop
+        function renderNewTable(data) {
+            const tbody = document.getElementById('new-results-body');
             const htmlParts = data.map((item) => {
-                // Determine color class based on point threshold
                 const pointClass = item.points > 4000 ? 'points-high' : '';
-
                 return `
                     <tr>
-                        <td class="points-cell ${pointClass}">${item.points.toLocaleString()}</td>
                         <td>${item.creds}</td>
+                        <td class="points-cell ${pointClass}">${item.points.toLocaleString()}</td>
                         <td class="action-cell">
-                            <button class="copy-icon" onclick="copyText('${item.creds} | Points = ${item.points}', this)" title="Copy Row">
+                            <button class="copy-icon" onclick="copyText('${item.creds}', this)" title="Copy Creds Only">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </td>
                     </tr>
                 `;
             });
-            
             tbody.innerHTML = htmlParts.join('');
         }
 
-        // --- 3. Utilities ---
-
-        document.getElementById('btn-clear').addEventListener('click', () => {
-            document.getElementById('point-input').value = '';
-            document.getElementById('results-body').innerHTML = '';
-            document.getElementById('point-stats-container').classList.add('hidden');
-            document.getElementById('results-wrapper').classList.add('hidden');
-            document.getElementById('btn-copy-all').classList.add('hidden');
-            document.getElementById('btn-download').classList.add('hidden');
-            sortedDataCache = [];
+        document.getElementById('btn-clear-new').addEventListener('click', () => {
+            document.getElementById('new-input').value = '';
+            document.getElementById('new-results-body').innerHTML = '';
+            document.getElementById('new-stats').classList.add('hidden');
+            document.getElementById('new-results-wrapper').classList.add('hidden');
+            document.getElementById('btn-copy-all-new').classList.add('hidden');
+            newDataCache = [];
         });
 
-        document.getElementById('btn-copy-all').addEventListener('click', () => {
-            if(sortedDataCache.length === 0) return;
-            const allText = sortedDataCache.map(i => `${i.creds} | Points = ${i.points}`).join('\n');
-            navigator.clipboard.writeText(allText).then(() => {
-                const btn = document.getElementById('btn-copy-all');
-                const originalText = btn.innerHTML;
+        document.getElementById('btn-copy-all-new').addEventListener('click', () => {
+            if(newDataCache.length === 0) return;
+            // New Sorter: Copies Full Line format for backup, or just creds? 
+            // Typically "Copy All" copies the list content. Let's keep original line format for mass export.
+            const allText = newDataCache.map(i => `${i.creds} | Points: ${i.points}`).join('\n');
+            copyToClipboard(allText, () => {
+                const btn = document.getElementById('btn-copy-all-new');
+                const originalHTML = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                setTimeout(() => btn.innerHTML = originalText, 2000);
+                setTimeout(() => btn.innerHTML = originalHTML, 2000);
             });
         });
 
-        document.getElementById('btn-download').addEventListener('click', () => {
-            if(sortedDataCache.length === 0) return;
-            const content = sortedDataCache.map(i => `${i.creds} | Points = ${i.points}`).join('\n');
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Sorted_Points_${new Date().toISOString().slice(0,10)}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+
+        // --- 3. CLASSIC Point Sorter Logic ---
+        let classicDataCache = [];
+
+        document.getElementById('btn-sort-classic').addEventListener('click', function() {
+            const input = document.getElementById('classic-input').value;
+            if(!input.trim()) return alert('Please paste some data first!');
+
+            const lines = input.split('\n');
+            const processed = [];
+            
+            // Classic Regex: Strict "Points ="
+            const regex = /^(.*?)\s*\|\s*Points\s*=\s*(\d+)/i;
+
+            for(let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if(line.length < 5) continue;
+                const match = line.match(regex);
+                if(match) {
+                    const points = parseInt(match[2], 10);
+                    processed.push({ creds: match[1], points: points, original: line });
+                }
+            }
+
+            if(processed.length === 0) return alert('No valid "Points =" data found. Try New Sorter?');
+
+            processed.sort((a, b) => b.points - a.points);
+            classicDataCache = processed;
+
+            document.getElementById('classic-stat-total').innerText = processed.length.toLocaleString();
+            document.getElementById('classic-stat-highest').innerText = processed[0].points.toLocaleString();
+            
+            document.getElementById('classic-stats').classList.remove('hidden');
+            document.getElementById('classic-results-wrapper').classList.remove('hidden');
+            document.getElementById('btn-copy-all-classic').classList.remove('hidden');
+            
+            renderClassicTable(processed);
         });
 
-        window.copyText = function(text, btnElement) {
-            navigator.clipboard.writeText(text).then(() => {
-                const icon = btnElement.querySelector('i');
-                icon.className = 'fas fa-check';
-                // Note: hover effect handles styles, we just change icon content temporarily
-                setTimeout(() => {
-                    icon.className = 'fas fa-copy';
-                }, 1500);
+        function renderClassicTable(data) {
+            const tbody = document.getElementById('classic-results-body');
+            const htmlParts = data.map((item) => {
+                return `
+                    <tr>
+                        <td style="font-size: 0.9rem;">${item.creds} | Points = ${item.points}</td>
+                        <td class="points-cell" style="color: var(--primary);">${item.points.toLocaleString()}</td>
+                        <td class="action-cell">
+                            <button class="copy-icon" onclick="copyText('${item.creds} | Points = ${item.points}', this)" title="Copy Full Line">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
             });
-        };
+            tbody.innerHTML = htmlParts.join('');
+        }
 
-        // --- 4. Legacy Data Processor (Minimal functionality kept as requested) ---
+        document.getElementById('btn-clear-classic').addEventListener('click', () => {
+            document.getElementById('classic-input').value = '';
+            document.getElementById('classic-results-body').innerHTML = '';
+            document.getElementById('classic-stats').classList.add('hidden');
+            document.getElementById('classic-results-wrapper').classList.add('hidden');
+            document.getElementById('btn-copy-all-classic').classList.add('hidden');
+            classicDataCache = [];
+        });
+
+        document.getElementById('btn-copy-all-classic').addEventListener('click', () => {
+            if(classicDataCache.length === 0) return;
+            const allText = classicDataCache.map(i => i.original).join('\n');
+            copyToClipboard(allText, () => {
+                const btn = document.getElementById('btn-copy-all-classic');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => btn.innerHTML = originalHTML, 2000);
+            });
+        });
+
+        // --- 4. Legacy Data Processor ---
         window.processLegacyData = function() {
             const locker = document.getElementById('locker-input').value;
             const stats = document.getElementById('stats-input').value;
-            
             if(!locker && !stats) return alert("Please enter data in at least one box.");
             
             const output = document.getElementById('legacy-output');
@@ -561,11 +696,9 @@
             wrapper.classList.remove('hidden');
             output.innerHTML = `<div style="padding: 10px; color: var(--success);">
                 <i class="fas fa-check-circle"></i> Data received.<br>
-                For best results, please use the <strong>Point Sorter</strong> tab for high-speed processing.<br>
                 Lines detected: ${(locker.split('\n').length + stats.split('\n').length).toLocaleString()}
             </div>`;
         };
-
     </script>
 </body>
 </html>
